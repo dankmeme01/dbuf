@@ -184,7 +184,7 @@ public:
         return Err("varing encoding not yet implemented");
     }
 
-    auto writeVarUint(uint64_t value) {
+    Result<> writeVarUint(uint64_t value) {
         size_t written = 0;
 
         while (true) {
@@ -209,9 +209,7 @@ public:
             }
         }
 
-        if constexpr (IsTry) {
-            return Ok();
-        }
+        return Ok();
     }
 
     auto writeStringVar(std::string_view str) {
