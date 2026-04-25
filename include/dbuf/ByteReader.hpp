@@ -39,6 +39,13 @@ struct SpanReadSource {
         return Ok();
     }
 
+    Result<std::span<const uint8_t>> slice(size_t pos, size_t size) const {
+        if (pos + size > m_data.size()) {
+            return Err("Slice out of bounds");
+        }
+        return Ok(m_data.subspan(pos, size));
+    }
+
 private:
     std::span<const uint8_t> m_data;
     size_t m_pos = 0;
