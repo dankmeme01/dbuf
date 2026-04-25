@@ -27,7 +27,7 @@ struct VectorSource {
 
 TEST(ByteReaderTest, ReadPrimitives) {
     std::vector<uint8_t> data = { 0x01, 0x02, 0x03, 0x00, 0x04, 0x00, 0x00, 0x00 };
-    ByteReader<> reader(data);
+    ByteReader reader(data);
 
     EXPECT_EQ(*reader.readU8(), 0x01);
     EXPECT_EQ(*reader.readU16(), 0x0302);

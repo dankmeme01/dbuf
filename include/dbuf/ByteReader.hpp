@@ -49,6 +49,9 @@ class ByteReader {
 public:
     ByteReader(S source) : m_source(std::move(source)) {}
 
+    template <typename Y>
+    ByteReader(Y&& source) requires std::constructible_from<S, Y&&> : m_source(std::forward<Y>(source)) {}
+
     ByteReader(const ByteReader& other) = default;
     ByteReader& operator=(const ByteReader& other) = default;
     ByteReader(ByteReader&& other) noexcept = default;
