@@ -3,6 +3,7 @@
 #include "Internal.hpp"
 #include <cstring>
 #include <vector>
+#include <array>
 
 namespace dbuf {
 
