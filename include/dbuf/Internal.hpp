@@ -61,4 +61,9 @@ concept SeekWriteSink = AnyWriteSink<T> && requires(T writer, size_t pos, size_t
     { writer.slice(pos, size) } -> std::same_as<std::span<const uint8_t>>;
 };
 
+template <typename T>
+concept IntoInnerSink = requires(T&& writer) {
+    { std::move(writer).intoInner() };
+};
+
 }

@@ -62,8 +62,8 @@ TEST(WriterTest, Primitives) {
 TEST(WriterTest, VarUintEncoding) {
     ByteWriter writer;
 
-    writer.writeVarUint(0x45);
-    writer.writeVarUint(128);
+    EXPECT_TRUE(writer.writeVarUint(0x45).isOk());
+    EXPECT_TRUE(writer.writeVarUint(128).isOk());
 
     auto out = writer.written();
     expectBytes(out, { 0x45, 0x80, 0x01 });
@@ -110,4 +110,18 @@ TEST(WriterTest, ArrayWriterErrorHandling) {
 
     auto res2 = writer.writeU32(0x02030405);
     EXPECT_TRUE(res2.isErr());
+}
+
+TEST(WriterTest, HeapIntoInner) {
+    ByteWriter<> writer;
+
+    writer.writeU32(0x1234);
+    auto inner = std::move(writer).intoInner();
+
+    EXPECT_EQ(inner.size(), sizeof(uint32_t));
+
+    uint32_t val;
+    std::memcpy(&val, inner.data(), inner.size());
+
+    EXPECT_EQ(val, 0x1234);
 }

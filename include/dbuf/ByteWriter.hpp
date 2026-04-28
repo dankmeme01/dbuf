@@ -50,6 +50,10 @@ struct HeapSink {
         return std::span<const uint8_t>(m_buffer.data() + pos, size);
     }
 
+    std::vector<uint8_t> intoInner() && {
+        return std::move(m_buffer);
+    }
+
 private:
     std::vector<uint8_t> m_buffer;
     size_t m_pos = 0;
@@ -274,6 +278,10 @@ public:
         func(*this);
         GEODE_UNWRAP(m_sink.setPosition(oldPos));
         return Ok();
+    }
+
+    auto intoInner() && requires IntoInnerSink<S> {
+        return std::move(m_sink).intoInner();
     }
 
 private:
