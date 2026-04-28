@@ -99,6 +99,10 @@ struct ArraySink {
         return std::span<const uint8_t>(m_buffer.data() + pos, size);
     }
 
+    std::array<uint8_t, N> intoInner() && {
+        return m_buffer;
+    }
+
 private:
     std::array<uint8_t, N> m_buffer;
     size_t m_pos = 0;
@@ -266,6 +270,14 @@ public:
 
     std::span<const uint8_t> written() const requires SeekWriteSink<S> {
         return m_sink.slice(0, m_sink.position());
+    }
+
+    std::vector<uint8_t> writtenVec() const requires SeekWriteSink<S> {
+        auto span = this->written();
+
+        std::vector<uint8_t> vec;
+        vec.assign(span.begin(), span.end());
+        return vec;
     }
 
     std::span<const uint8_t> slice(size_t pos, size_t size) const requires SeekWriteSink<S> {

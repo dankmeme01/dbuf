@@ -125,3 +125,17 @@ TEST(WriterTest, HeapIntoInner) {
 
     EXPECT_EQ(val, 0x1234);
 }
+
+TEST(WriterTest, WrittenVec) {
+    ByteWriter<> writer;
+
+    writer.writeU32(0x1234);
+    auto written = writer.writtenVec();
+
+    EXPECT_EQ(written.size(), sizeof(uint32_t));
+
+    uint32_t val;
+    std::memcpy(&val, written.data(), written.size());
+
+    EXPECT_EQ(val, 0x1234);
+}
