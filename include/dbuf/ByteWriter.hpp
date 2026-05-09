@@ -9,6 +9,7 @@ namespace dbuf {
 
 /// Heap sink, uses a vector as the underlying storage.
 /// Grows automatically, impls WriteSink, WriteZeroesSink, SeekWriteSink.
+/// This sink overwrites data in-place, and does not shift the buffer if attempting to write in the middle.
 struct HeapSink {
     void write(const uint8_t* data, size_t size) {
         size_t endPos = m_pos + size;
@@ -51,6 +52,10 @@ struct HeapSink {
         return std::span<const uint8_t>(m_buffer.data() + pos, size);
     }
 
+    std::span<const uint8_t> written() const {
+        return m_buffer;
+    }
+
     std::vector<uint8_t> intoInner() && {
         return std::move(m_buffer);
     }
@@ -62,6 +67,7 @@ private:
 
 /// Array sink, uses a fixed-size array as the underlying storage.
 /// Does not grow, impls TryWriteSink, WriteZeroesSink, SeekWriteSink.
+/// This sink overwrites data in-place, and does not shift the buffer if attempting to write in the middle.
 template <size_t N = 1024>
 struct ArraySink {
     Result<> write(const uint8_t* data, size_t size) {
@@ -98,6 +104,10 @@ struct ArraySink {
         }
 
         return std::span<const uint8_t>(m_buffer.data() + pos, size);
+    }
+
+    std::span<const uint8_t> written() const {
+        return std::span<const uint8_t>(m_buffer.data(), m_written);
     }
 
     std::array<uint8_t, N> intoInner() && {
@@ -270,7 +280,7 @@ public:
     }
 
     std::span<const uint8_t> written() const requires SeekWriteSink<S> {
-        return m_sink.slice(0, m_sink.position());
+        return m_sink.written();
     }
 
     std::vector<uint8_t> writtenVec() const requires SeekWriteSink<S> {

@@ -137,6 +137,7 @@ concept SeekWriteSink = AnyWriteSink<T> && requires(T writer, size_t pos, size_t
     { writer.setPosition(pos) } -> std::same_as<Result<void>>;
     { writer.position() } -> std::same_as<size_t>;
     { writer.slice(pos, size) } -> std::same_as<std::span<const uint8_t>>;
+    { writer.written() } -> std::same_as<std::span<const uint8_t>>;
 };
 ```
 
