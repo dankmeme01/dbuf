@@ -4,7 +4,16 @@
 #include <span>
 #include <stdint.h>
 #include <stddef.h>
-#include "Result.hpp"
+
+#if defined(__has_include)
+# if __has_include(<Geode/Result.hpp>)
+#  include <Geode/Result.hpp>
+# endif
+#endif
+
+#ifndef GEODE_RESULT_HPP
+# include "Result.hpp"
+#endif
 
 namespace dbuf {
 
